@@ -1,0 +1,17 @@
+<header class="py-3 bg-warm-light shadow-md">
+  <div class="center_sect flex justify-between items-center">
+    <h3
+      class="font-semibold text-[2rem] text-accent-primary font-mono bg-white px-2 rounded-full shadow-md"
+    >
+      CW
+    </h3>
+    @if(userWorkspaceInfo?.uid){
+    <a
+      [routerLink]="['/w', userWorkspaceInfo?.uid]"
+      class="underline hover:no-underline transition-all duration-300 text-accent-primary"
+      >Workspace</a
+    >
+    }
+  </div>
+</header>
+<router-outlet></router-outlet>

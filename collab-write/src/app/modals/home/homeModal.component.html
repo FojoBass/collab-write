@@ -1,0 +1,26 @@
+<div class="modal" (click)="handleModalClose($event)">
+  <form
+    [formGroup]="authForm"
+    class="bg-sub-warm w-96 p-5 rounded-md shadow-md"
+  >
+    <div class="auth_form_opt">
+      <input
+        type="text"
+        placeholder="Enter fullname"
+        formControlName="fullName"
+      />
+    </div>
+
+    @if(target === "edit"){
+    <div class="auth_form_opt">
+      <input
+        type="text"
+        placeholder="Enter document Id"
+        formControlName="docId"
+      />
+    </div>
+    }
+
+    <button class="btn py-2 mt-8 block mx-auto">Submit</button>
+  </form>
+</div>

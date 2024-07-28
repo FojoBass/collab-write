@@ -1,0 +1,12 @@
+<section id="home">
+  <div class="absolute inset-0 flex items-center justify-center gap-5">
+    <button class="cta_btn" (click)="openModal('create')">
+      Create Workspace
+    </button>
+    <button class="btn" (click)="openModal('edit')">Join Edit</button>
+  </div>
+  @if(isModalOpen.state){
+  <modal-home [target]="isModalOpen.target" [closeModal]="closeModal" />
+  }
+</section>
+`
