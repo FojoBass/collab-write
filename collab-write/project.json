@@ -23,6 +23,7 @@
           }
         ],
         "styles": ["libs/shared/styles.scss"],
+
         "scripts": []
       },
       "configurations": {

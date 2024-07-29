@@ -16,6 +16,7 @@ module.exports = {
         dark: '#333333',
         'accent-primary': '#FF8A65',
         'accent-secondary': '#FFB74D',
+        'clr-brd': '#8f8f8f',
       },
     },
   },

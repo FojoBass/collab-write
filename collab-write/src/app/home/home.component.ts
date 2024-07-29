@@ -2,11 +2,17 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HomeModalComponent } from '../modals/home/homeModal.component';
+import { ModalLayoutComponent } from '../modals/layout/modalLayout.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, HomeModalComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    HomeModalComponent,
+    ModalLayoutComponent,
+  ],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {

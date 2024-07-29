@@ -6,7 +6,9 @@
     <button class="btn" (click)="openModal('edit')">Join Edit</button>
   </div>
   @if(isModalOpen.state){
-  <modal-home [target]="isModalOpen.target" [closeModal]="closeModal" />
+  <app-modal-layout [closeModal]="closeModal">
+    <app-home-modal [target]="isModalOpen.target" />
+  </app-modal-layout>
   }
 </section>
 `

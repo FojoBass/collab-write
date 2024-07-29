@@ -5,7 +5,7 @@ import { UserInfoInt } from '@collab-write/firebase';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'modal-home',
+  selector: 'app-home-modal',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './homeModal.component.html',
@@ -18,16 +18,9 @@ export class HomeModalComponent {
     docId: new FormControl(''),
   });
   @Input() target: string = '';
-  @Input() closeModal!: (state: boolean) => void;
 
   constructor(private globalService: GlobalService) {
     this.userWorkspaceInfo = this.globalService.userWorkspaceInfo;
     this.userEditInfo = this.globalService.userEditInfo;
-  }
-
-  handleModalClose(evt: MouseEvent) {
-    if (evt.target === evt.currentTarget) {
-      this.closeModal(false);
-    }
   }
 }

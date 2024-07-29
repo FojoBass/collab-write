@@ -1,7 +1,12 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
+import { GlobalService } from './app/services/global.service';
 
-bootstrapApplication(AppComponent, appConfig).catch((err) =>
-  console.error(err)
-);
+bootstrapApplication(AppComponent, appConfig)
+  .then((appRef) => {
+    const injector = appRef.injector;
+    const globalService = injector.get(GlobalService);
+    ((window as any).globalService as GlobalService) = globalService;
+  })
+  .catch((err) => console.error(err));
