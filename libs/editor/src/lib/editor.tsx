@@ -111,28 +111,27 @@ const Editor = () => {
   return (
     <div className="center_sect">
       {!doc ? (
-        'Loading...'
+        <div className="editor mt-8 max-w-[650px] mx-auto border border-clr-brd py-3 rounded-md bg-slate-200 h-36 animate-pulse"></div>
       ) : (
         <div className="editor mt-8 max-w-[650px] mx-auto border border-clr-brd py-3 rounded-md bg-sub-warm">
-          {doc.content && (
-            <EditorProvider
-              slotBefore={<MenuBar />}
-              extensions={extensions}
-              content={doc.content}
-              onUpdate={({ editor }) => {
-                const html = editor.getHTML();
-                setHtmlContent(html);
-              }}
-              slotAfter={
-                <SaveBtn
-                  htmlContent={htmlContent}
-                  docId={docId ?? ''}
-                  disableSave={disableSave ?? false}
-                />
-              }
-              key={doc.id}
-            ></EditorProvider>
-          )}
+          <EditorProvider
+            slotBefore={<MenuBar />}
+            extensions={extensions}
+            content={doc.content}
+            onUpdate={({ editor }) => {
+              const html = editor.getHTML();
+              setHtmlContent(html);
+            }}
+            slotAfter={
+              <SaveBtn
+                htmlContent={htmlContent}
+                docId={docId ?? ''}
+                disableSave={disableSave ?? false}
+              />
+            }
+            key={doc.id}
+          ></EditorProvider>
+
           {isErr && <p className="text-center text-red-500 text-sm">Failed</p>}
           {isSuccess && (
             <p className="text-center text-green-500 text-sm">Success</p>

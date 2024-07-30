@@ -34,7 +34,6 @@ export class GlobalService implements OnDestroy {
     this.subscription.add(
       this.formErrorSub.subscribe((error) => {
         if (error.msg && error.targetId) {
-          console.log('new error: ', { error });
           setTimeout(() => {
             this.setFormErr({ msg: '', targetId: '' });
           }, 2500);

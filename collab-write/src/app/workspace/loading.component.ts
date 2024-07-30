@@ -9,4 +9,5 @@ import { CommonModule } from '@angular/common';
 })
 export class LoadingComponent {
   @Input() setIsLoading!: () => void;
+  dummyDocs = [1, 2, 3];
 }

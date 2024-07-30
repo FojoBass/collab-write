@@ -67,8 +67,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
 
   async fetchDocs(uid: string): Promise<void> {
     try {
-      console.log('Fetch called');
-
       this.isLoading = true;
       let docs: any[] = [];
       (await getUserDocs(uid)).docs.forEach((doc) => {
@@ -101,9 +99,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     try {
       this.isUserLoading = true;
       const userInfo = (await getUser(id)).data() as UserInfoInt;
-
-      this.globalService.setIsAuth(true);
-      this.globalService.setUserInfo(userInfo);
+      if (userInfo) {
+        this.globalService.setIsAuth(true);
+        this.globalService.setUserInfo(userInfo);
+      } else this.router.navigateByUrl('/');
     } catch (err) {
       this.router.navigateByUrl('/');
       console.error(err);

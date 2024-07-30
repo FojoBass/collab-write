@@ -1,1 +1,17 @@
-<div>Loading...</div>
+<section id="work_space">
+  <div class="center_sect flex justify-center align-middle">
+    <div class="doc_wrapper w-[650px] py-10">
+      @for(doc of dummyDocs; track doc){
+      <div class="doc mb-4 bg-sub-warm p-4 rounded-md">
+        <h3 class="title w-[55%] h-8 bg-slate-200 animate-pulse"></h3>
+        <footer
+          class="flex justify-between align-middle mt-3 text-sm italic text-[#9d9d9d]"
+        >
+          <p class="w-36 h-5 bg-slate-200 animate-pulse"></p>
+          <p class="w-36 h-5 bg-slate-200 animate-pulse"></p>
+        </footer>
+      </div>
+      }
+    </div>
+  </div>
+</section>
