@@ -6,7 +6,7 @@ import { EditorProvider, useCurrentEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { FaEdit, FaSave } from 'react-icons/fa';
 import MenuBar from './MenuBar';
-import { useEffect, useMemo, useState } from 'react';
+import { MouseEventHandler, useEffect, useMemo, useState } from 'react';
 import { DocumentInt, updateDocReq } from '@collab-write/firebase';
 import { useGlobalContext } from './context.api';
 
@@ -52,6 +52,7 @@ const Editor = () => {
   // const [disableSave, setDisableSave] = useState(false);
   const [requestStatus, setRequestStatus] = useState<ReqStatusEnum | ''>('');
   const [disableReq, setDisableReq] = useState(false);
+  const [isCopy, setIsCopy] = useState(false);
 
   const handleReqClick = async () => {
     if (doc && collabUserId) {
@@ -72,6 +73,18 @@ const Editor = () => {
     }
   };
 
+  const handleClipboard: MouseEventHandler = (e) => {
+    const text = (e.currentTarget as HTMLElement).textContent ?? '';
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setIsCopy(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsErr && setIsErr(false);
@@ -79,6 +92,14 @@ const Editor = () => {
 
     return () => clearTimeout(timer);
   }, [isErr]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsCopy(false);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [isCopy]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -151,6 +172,19 @@ const Editor = () => {
             >
               <FaEdit />
             </button>
+          )}
+          {isUser && !isCopy ? (
+            <button
+              title="Document id"
+              className="absolute bottom-3 left-[70%] italic text-xs text-accent-primary underline hover:no-underline"
+              onClick={handleClipboard}
+            >
+              {docId}
+            </button>
+          ) : (
+            <p className="absolute bottom-3 left-[70%] italic text-xs text-accent-primary ">
+              Doc Id copied
+            </p>
           )}
         </div>
       )}
