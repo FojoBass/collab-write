@@ -15,6 +15,20 @@ interface DocumentInt {
   title: string;
   createdAt: FieldValue | string;
   updateAt: FieldValue | string;
+  content: string;
+  collborators: CollaboInt[];
 }
 
-export { GlobalState, UserInfoInt, DocumentInt };
+interface FormErrorInt {
+  targetId: string;
+  msg: string;
+}
+
+interface CollaboInt {
+  name: string;
+  uid: string;
+  isRequest: boolean;
+  isGranted: boolean;
+}
+
+export { GlobalState, UserInfoInt, DocumentInt, FormErrorInt, CollaboInt };

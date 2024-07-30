@@ -14,10 +14,18 @@ input {
 
 .cta_btn {
   @apply bg-blue-700 hover:bg-blue-500 transition-all duration-200 text-white p-3 rounded-md;
+
+  &:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
 }
 
 .btn {
   @apply border border-blue-700  rounded-md px-3 py-2 text-blue-700 hover:bg-warm-light hover:border-warm-light transition-all duration-200;
+
+  &:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
 }
 
 .modal {
@@ -44,5 +52,9 @@ input {
     &:focus-within {
       border-bottom-color: #000;
     }
+  }
+
+  p {
+    @apply text-red-500 text-xs min-h-3 transition duration-200;
   }
 }

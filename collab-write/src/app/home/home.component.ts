@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HomeModalComponent } from '../modals/home/homeModal.component';
 import { ModalLayoutComponent } from '../modals/layout/modalLayout.component';
+import { GlobalService } from '../services/global.service';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +18,8 @@ import { ModalLayoutComponent } from '../modals/layout/modalLayout.component';
 })
 export class HomeComponent {
   isModalOpen = { state: false, target: '' };
+
+  constructor(private globalService: GlobalService) {}
 
   openModal(target: string) {
     this.isModalOpen = { state: true, target };

@@ -5,9 +5,9 @@
     >
       CW
     </h3>
-    @if(userWorkspaceInfo?.uid){
+    @if(this.isAuth){
     <a
-      [routerLink]="['/w', userWorkspaceInfo?.uid]"
+      [routerLink]="['/w', userInfo?.uid]"
       class="underline hover:no-underline transition-all duration-300 text-accent-primary"
       >Workspace</a
     >

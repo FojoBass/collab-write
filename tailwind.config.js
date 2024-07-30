@@ -5,7 +5,7 @@ const { join } = require('path');
 module.exports = {
   content: [
     join(__dirname, '/collab-write/src/**/!(*.stories|*.spec).{ts,html}'),
-    join(__dirname, '/libs/editor/src/lib/editor.tsx'),
+    join(__dirname, '/libs/editor/src/lib/*.tsx'),
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {

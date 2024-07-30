@@ -4,193 +4,16 @@ import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
 import { EditorProvider, useCurrentEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import {
-  FaBold,
-  FaItalic,
-  FaStrikethrough,
-  FaCode,
-  FaHeading,
-  FaListOl,
-  FaListUl,
-  FaQuoteLeft,
-  FaRedo,
-  FaUndo,
-  FaUnderline,
-  FaEraser,
-  FaHighlighter,
-  FaSave,
-} from 'react-icons/fa';
+import { FaEdit, FaSave } from 'react-icons/fa';
+import MenuBar from './MenuBar';
+import { useEffect, useMemo, useState } from 'react';
+import { DocumentInt, updateDocReq } from '@collab-write/firebase';
+import { useGlobalContext } from './context.api';
 
-const MenuBar = () => {
-  const { editor } = useCurrentEditor();
-
-  if (!editor) {
-    return null;
-  }
-
-  return (
-    <div className="control-group flex flex-col gap-2 px-3 pb-3 border-b border-clr-brd ">
-      <div className="collabs">collaborators here</div>
-      <div className="button-group flex justify-between align-middle">
-        <div className="btn_grp">
-          <button
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            disabled={!editor.can().chain().focus().toggleBold().run()}
-            className={editor.isActive('bold') ? 'is-active' : ''}
-            title="Bold text"
-          >
-            <FaBold />
-          </button>
-
-          <button
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            disabled={!editor.can().chain().focus().toggleUnderline().run()}
-            className={editor.isActive('underline') ? 'is-active' : ''}
-            title="Underline text"
-          >
-            <FaUnderline />
-          </button>
-
-          <button
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            disabled={!editor.can().chain().focus().toggleItalic().run()}
-            className={editor.isActive('italic') ? 'is-active' : ''}
-            title="Italicize text"
-          >
-            <FaItalic />
-          </button>
-
-          <button
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-            disabled={!editor.can().chain().focus().toggleStrike().run()}
-            className={editor.isActive('strike') ? 'is-active' : ''}
-            title="Strikethrough text"
-          >
-            <FaStrikethrough />
-          </button>
-        </div>
-
-        <div className="btn_grp">
-          <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 1 }).run()
-            }
-            className={
-              editor.isActive('heading', { level: 1 }) ? 'is-active' : ''
-            }
-            title="Large heading"
-          >
-            <FaHeading />
-            <sub>1</sub>
-          </button>
-
-          <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 2 }).run()
-            }
-            className={
-              editor.isActive('heading', { level: 2 }) ? 'is-active' : ''
-            }
-            title="Mid heading"
-          >
-            <FaHeading />
-            <sub>2</sub>
-          </button>
-
-          <button
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 3 }).run()
-            }
-            className={
-              editor.isActive('heading', { level: 3 }) ? 'is-active' : ''
-            }
-            title="Small heading"
-          >
-            <FaHeading />
-            <sub>3</sub>
-          </button>
-        </div>
-
-        <div className="btn_grp">
-          <button
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={editor.isActive('bulletList') ? 'is-active' : ''}
-            title="Bullet list"
-          >
-            <FaListUl />
-          </button>
-
-          <button
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={editor.isActive('orderedList') ? 'is-active' : ''}
-            title="Numbered list"
-          >
-            <FaListOl />
-          </button>
-
-          <button
-            onClick={() => editor.chain().focus().toggleCode().run()}
-            disabled={!editor.can().chain().focus().toggleCode().run()}
-            className={editor.isActive('code') ? 'is-active' : ''}
-            title="Inline code"
-          >
-            <FaCode />
-          </button>
-
-          <button
-            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            className={editor.isActive('codeBlock') ? 'is-active' : ''}
-            title="Block code"
-          >
-            <FaCode />
-            <sub>b</sub>
-          </button>
-
-          <button
-            onClick={() => editor.chain().focus().unsetAllMarks().run()}
-            title="Remove inline mod"
-          >
-            <FaEraser />
-          </button>
-
-          <button
-            onClick={() => editor.chain().focus().clearNodes().run()}
-            title="Remove block mod"
-          >
-            <FaEraser />
-            <sub>b</sub>
-          </button>
-
-          <button
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={editor.isActive('blockquote') ? 'is-active' : ''}
-            title="Blockquote"
-          >
-            <FaQuoteLeft />
-          </button>
-        </div>
-
-        <div className="btn_grp">
-          <button
-            onClick={() => editor.chain().focus().undo().run()}
-            disabled={!editor.can().chain().focus().undo().run()}
-            title="Undo"
-          >
-            <FaUndo />
-          </button>
-
-          <button
-            onClick={() => editor.chain().focus().redo().run()}
-            disabled={!editor.can().chain().focus().redo().run()}
-            title="Redo"
-          >
-            <FaRedo />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+enum ReqStatusEnum {
+  req = 'requested',
+  gran = 'granted',
+}
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -208,28 +31,165 @@ const extensions = [
   Underline,
 ];
 
-const content = '';
-
 const Editor = () => {
-  const update = () => {};
+  const {
+    doc,
+    docId,
+    isUser,
+    isErr,
+    isSuccess,
+    setIsErr,
+    setIsSuccess,
+    disableSave,
+    setDisableSave,
+  } = useGlobalContext();
+  const [htmlContent, setHtmlContent] = useState('');
+  const collabUserId = useMemo(() => {
+    const storeCoId = sessionStorage.getItem('collab-write-co-id');
+    if (!isUser && storeCoId) return JSON.parse(storeCoId).uid;
+    return '';
+  }, [isUser]);
+  // const [disableSave, setDisableSave] = useState(false);
+  const [requestStatus, setRequestStatus] = useState<ReqStatusEnum | ''>('');
+  const [disableReq, setDisableReq] = useState(false);
+
+  const handleReqClick = async () => {
+    if (doc && collabUserId) {
+      const collborators = doc.collborators.map((user) => {
+        return user.uid === collabUserId
+          ? { ...user, isRequest: !user.isRequest }
+          : user;
+      });
+      const data: Partial<DocumentInt> = { collborators, id: doc.id };
+      try {
+        setDisableReq(true);
+        await updateDocReq(data);
+      } catch (err) {
+        setIsErr && setIsErr(true);
+      } finally {
+        setDisableReq(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsErr && setIsErr(false);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [isErr]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsSuccess && setIsSuccess(false);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, [isSuccess]);
+
+  useEffect(() => {
+    setDisableSave && setDisableSave(!isUser);
+  }, [isUser]);
+
+  useEffect(() => {
+    if (doc && collabUserId) {
+      const collabs = doc.collborators;
+      if (collabs.find((user) => user.uid === collabUserId)?.isGranted) {
+        setDisableSave && setDisableSave(false);
+        setRequestStatus(ReqStatusEnum.gran);
+      } else if (collabs.find((user) => user.uid === collabUserId)?.isRequest) {
+        setDisableSave && setDisableSave(true);
+        setRequestStatus(ReqStatusEnum.req);
+      } else {
+        setDisableSave && setDisableSave(true);
+        setRequestStatus('');
+      }
+    }
+  }, [doc, collabUserId]);
+
   return (
     <div className="center_sect">
-      <div className="editor mt-8 max-w-[650px] mx-auto border border-clr-brd py-3 rounded-md bg-sub-warm">
-        <EditorProvider
-          slotBefore={<MenuBar />}
-          extensions={extensions}
-          content={content}
-          onUpdate={update}
-          slotAfter={<SaveBtn />}
-        ></EditorProvider>
-      </div>
+      {!doc ? (
+        'Loading...'
+      ) : (
+        <div className="editor mt-8 max-w-[650px] mx-auto border border-clr-brd py-3 rounded-md bg-sub-warm">
+          {doc.content && (
+            <EditorProvider
+              slotBefore={<MenuBar />}
+              extensions={extensions}
+              content={doc.content}
+              onUpdate={({ editor }) => {
+                const html = editor.getHTML();
+                setHtmlContent(html);
+              }}
+              slotAfter={
+                <SaveBtn
+                  htmlContent={htmlContent}
+                  docId={docId ?? ''}
+                  disableSave={disableSave ?? false}
+                />
+              }
+              key={doc.id}
+            ></EditorProvider>
+          )}
+          {isErr && <p className="text-center text-red-500 text-sm">Failed</p>}
+          {isSuccess && (
+            <p className="text-center text-green-500 text-sm">Success</p>
+          )}
+          {!isUser && (
+            <button
+              className={`req_btn ${requestStatus}`}
+              title={`${
+                requestStatus === ReqStatusEnum.req
+                  ? 'Requested for Edit'
+                  : requestStatus === ReqStatusEnum.gran
+                  ? 'Granted Edit'
+                  : 'Request for Edit'
+              }`}
+              onClick={handleReqClick}
+              disabled={disableReq || requestStatus === ReqStatusEnum.gran}
+            >
+              <FaEdit />
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
-const SaveBtn = () => {
+const SaveBtn = ({
+  htmlContent,
+  docId,
+  disableSave,
+}: {
+  htmlContent: string;
+  docId: string;
+  disableSave: boolean;
+}) => {
+  const [loading, setLoading] = useState(false);
+  const { setIsErr, setIsSuccess } = useGlobalContext();
+
+  const handleSave = async () => {
+    const data = { content: htmlContent, id: docId };
+
+    try {
+      await updateDocReq(data);
+      setIsSuccess && setIsSuccess(true);
+    } catch (err) {
+      console.error(err);
+      setIsErr && setIsErr(true);
+    } finally {
+    }
+  };
+
   return (
-    <button className="cta_btn ml-4 mt-5">
+    <button
+      className="cta_btn ml-4 mt-5"
+      onClick={handleSave}
+      disabled={loading || disableSave}
+    >
       <FaSave />
     </button>
   );

@@ -1,21 +1,51 @@
 <form [formGroup]="authForm">
-  <div class="modal_form_opt">
+  <div class="modal_form_opt" data-id="fullName">
     <input
       type="text"
       placeholder="Enter fullname"
       formControlName="fullName"
     />
+    <p
+      [ngClass]="{
+        'opacity-100': formError.targetId === 'fullName',
+        'opacity-0': formError.targetId !== 'fullName'
+      }"
+    >
+      {{ formError.msg }}
+    </p>
   </div>
 
   @if(target === "edit"){
-  <div class="modal_form_opt">
+  <div class="modal_form_opt" data-id="docId">
     <input
       type="text"
       placeholder="Enter document Id"
       formControlName="docId"
     />
+    <p
+      [ngClass]="{
+        'opacity-100': formError.targetId === 'docId',
+        'opacity-0': formError.targetId !== 'docId'
+      }"
+    >
+      {{ formError.msg }}
+    </p>
   </div>
   }
 
-  <button class="btn">@if(target === "edit"){ Join }@else { Create }</button>
+  <button class="btn" (click)="createWorkspace()" [disabled]="loading">
+    @if(target === "edit"){ @if(loading){ Joining... }@else { Join } }@else{
+    @if(loading){ Creating... }@else { Create } }
+  </button>
+
+  <p
+    class="text-red-500 text-xs opacity-0 transition duration-200"
+    data-id="failed"
+    [ngClass]="{
+      'opacity-100': formError.targetId === 'failed',
+      'opacity-0': formError.targetId !== 'failed'
+    }"
+  >
+    {{ formError.msg }}
+  </p>
 </form>

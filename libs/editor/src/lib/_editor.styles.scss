@@ -1,4 +1,5 @@
 .editor {
+  position: relative;
   .tiptap {
     @apply px-3 pt-3;
 
@@ -98,8 +99,12 @@
     }
   }
 
+  .control-group {
+    @apply flex flex-col gap-2 px-3 pb-3 border-b border-clr-brd;
+  }
+
   .btn_grp {
-    @apply flex align-middle gap-3 text-xs;
+    @apply flex align-middle gap-3 text-xs md:text-sm md:gap-5;
 
     button {
       @apply opacity-70;
@@ -118,6 +123,68 @@
       svg {
         @apply inline;
       }
+    }
+  }
+
+  .hand_icon {
+    position: absolute;
+    top: 30%;
+    right: 0;
+    transform: translate(-3px, -50%);
+    transition: all ease 0.3s;
+    font-size: 0.7rem;
+    opacity: 0;
+
+    &.active {
+      opacity: 1;
+    }
+  }
+
+  .collab_info {
+    position: absolute;
+    top: 150%;
+    left: 0;
+    transform: translateX(-70%);
+    @apply w-[100px] bg-sub-warm border border-clr-brd p-1 px-2 rounded-md;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 2px;
+      transform: translateY(-100%);
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      @apply border-b-[10px] border-b-clr-brd;
+    }
+
+    input {
+      visibility: hidden;
+      position: absolute;
+
+      &:checked + label {
+        @apply bg-blue-600 text-white;
+      }
+    }
+  }
+
+  .req_btn {
+    position: absolute;
+    right: 10px;
+    bottom: 15px;
+    @apply border border-clr-brd rounded-full bg-red-300 text-sm  p-1 text-white;
+    box-shadow: 0 0 5px #dedede;
+
+    &:disabled {
+      @apply opacity-50 cursor-not-allowed;
+    }
+
+    &.requested {
+      @apply bg-amber-400;
+    }
+
+    &.granted {
+      @apply bg-green-600;
     }
   }
 }

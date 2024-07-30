@@ -1,11 +1,32 @@
 <form [formGroup]="newDocForm">
-  <div class="modal_form_opt">
+  <div class="modal_form_opt" data-id="title">
     <input
       type="text"
       placeholder="Enter document's title"
       formControlName="title"
     />
+    <p
+      [ngClass]="{
+        'opacity-100': formError.targetId === 'title',
+        'opacity-0': formError.targetId !== 'title'
+      }"
+    >
+      {{ formError.msg }}
+    </p>
   </div>
 
-  <button class="btn">Create</button>
+  <button class="btn" (click)="createDoc()">
+    @if(loading){Creating...}@else{Create}
+  </button>
+
+  <p
+    class="text-red-500 text-xs opacity-0 transition duration-200"
+    data-id="failed"
+    [ngClass]="{
+      'opacity-100': formError.targetId === 'failed',
+      'opacity-0': formError.targetId !== 'failed'
+    }"
+  >
+    {{ formError.msg }}
+  </p>
 </form>
